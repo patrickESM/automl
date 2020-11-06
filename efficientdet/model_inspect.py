@@ -21,8 +21,6 @@ from absl import app
 from absl import flags
 from absl import logging
 
-import cv2
-
 import numpy as np
 from PIL import Image
 import tensorflow.compat.v1 as tf
@@ -259,6 +257,9 @@ class ModelInspector(object):
     driver.inference(image_image_path, output_dir, **kwargs)
 
   def inference_webcam(self, **kwargs):
+    """Perform webcam inference for the given saved model."""
+    import cv2  # pylint: disable=g-import-not-at-top
+
     driver = inference.ServingDriver(
       self.model_name,
       self.ckpt_path,

@@ -6,7 +6,7 @@ Same as official automl repo but with new webcam runmode in model_inspect.py
 to run the model with webcam do the following after checking the repo out:
 
 ## call this in terminal for webcam demo:
-```python
+```
 wget https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco/efficientdet-d0.tar.gz
 wget https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco/efficientdet-d4.tar.gz
 tar zxf efficientdet-d0.tar.gz

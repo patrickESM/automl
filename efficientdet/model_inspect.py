@@ -21,6 +21,8 @@ from absl import app
 from absl import flags
 from absl import logging
 
+import cv2
+
 import numpy as np
 from PIL import Image
 import tensorflow.compat.v1 as tf
@@ -256,6 +258,41 @@ class ModelInspector(object):
                                        self.model_config.as_dict())
     driver.inference(image_image_path, output_dir, **kwargs)
 
+  def inference_webcam(self, **kwargs):
+    driver = inference.ServingDriver(
+      self.model_name,
+      self.ckpt_path,
+      batch_size=1,
+      use_xla=self.use_xla,
+      model_params=self.model_config.as_dict())
+    driver.load(self.saved_model_dir)
+
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+      print('Error opening input video: {}'.format('webcam'))
+
+    err_cnt = 0
+    while cap.isOpened():
+      # Capture frame-by-frame
+      ret, frame = cap.read()
+      if not ret:
+        if err_cnt < 20:
+          err_cnt += 1
+          continue
+        else:
+          print('Error retrieving images: {}'.format('webcam'))
+          break
+
+      raw_frames = [np.array(frame)]
+      detections_bs = driver.serve_images(raw_frames)
+      new_frame = driver.visualize(raw_frames[0], detections_bs[0], **kwargs)
+
+      # show the frame online, mainly used for real-time speed test.
+      cv2.imshow('Frame', new_frame)
+      # Press Q on keyboard to  exit
+      if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
   def build_and_save_model(self):
     """build and save the model into self.logdir."""
     with tf.Graph().as_default(), tf.Session() as sess:
@@ -449,7 +486,7 @@ class ModelInspector(object):
           kwargs['input_image'],
           trace_filename=kwargs.get('trace_filename', None))
     elif runmode in ('infer', 'saved_model', 'saved_model_infer',
-                     'saved_model_video'):
+                     'saved_model_video', 'webcam'):
       config_dict = {}
       if kwargs.get('line_thickness', None):
         config_dict['line_thickness'] = kwargs.get('line_thickness')
@@ -469,6 +506,8 @@ class ModelInspector(object):
       elif runmode == 'saved_model_video':
         self.saved_model_video(kwargs['input_video'], kwargs['output_video'],
                                **config_dict)
+      elif runmode == 'webcam':
+        self.inference_webcam(**config_dict)
     elif runmode == 'bm':
       self.benchmark_model(
           warmup_runs=5,

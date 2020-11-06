@@ -256,7 +256,7 @@ class ModelInspector(object):
                                        self.model_config.as_dict())
     driver.inference(image_image_path, output_dir, **kwargs)
 
-  def inference_webcam(self, **kwargs):
+  def saved_model_webcam(self, **kwargs):
     """Perform webcam inference for the given saved model."""
     import cv2  # pylint: disable=g-import-not-at-top
 
@@ -270,7 +270,7 @@ class ModelInspector(object):
 
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
-      print('Error opening input video: {}'.format('webcam'))
+      print('Error opening input: {}'.format('webcam'))
 
     err_cnt = 0
     while cap.isOpened():
@@ -487,7 +487,7 @@ class ModelInspector(object):
           kwargs['input_image'],
           trace_filename=kwargs.get('trace_filename', None))
     elif runmode in ('infer', 'saved_model', 'saved_model_infer',
-                     'saved_model_video', 'webcam'):
+                     'saved_model_video', 'saved_model_webcam'):
       config_dict = {}
       if kwargs.get('line_thickness', None):
         config_dict['line_thickness'] = kwargs.get('line_thickness')
@@ -507,8 +507,8 @@ class ModelInspector(object):
       elif runmode == 'saved_model_video':
         self.saved_model_video(kwargs['input_video'], kwargs['output_video'],
                                **config_dict)
-      elif runmode == 'webcam':
-        self.inference_webcam(**config_dict)
+      elif runmode == 'saved_model_webcam':
+        self.saved_model_webcam(**config_dict)
     elif runmode == 'bm':
       self.benchmark_model(
           warmup_runs=5,

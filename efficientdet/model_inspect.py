@@ -304,15 +304,6 @@ class ModelInspector(object):
             raw_frames = [np.array(frame)]
             detections_bs = driver.serve_images(raw_frames)
 
-            prediction = detections_bs[0]
-            boxes = prediction[:, 1:5]
-            classes = prediction[:, 6].astype(int)
-            scores = prediction[:, 5]
-
-            # print("boxes: " + str(boxes))
-            # print("classes: " + str(classes))
-            # print("scores: " + str(scores))
-
             json_str = driver.to_json(detections_bs[0])
 
             new_frame = driver.visualize(raw_frames[0], detections_bs[0], **kwargs)

@@ -58,6 +58,9 @@ flags.DEFINE_string('input_video', None, 'Input video path for inference.')
 flags.DEFINE_string('output_video', None,
                     'Output video path. If None, play it online instead.')
 
+# For webcam
+flags.DEFINE_string('webcam_idx', None, 'webcam index for webcam runmode. cv2 style')
+
 # For visualization.
 flags.DEFINE_integer('line_thickness', None, 'Line thickness for box.')
 flags.DEFINE_integer('max_boxes_to_draw', 100, 'Max number of boxes to draw.')
@@ -256,7 +259,7 @@ class ModelInspector(object):
                                        self.model_config.as_dict())
     driver.inference(image_image_path, output_dir, **kwargs)
 
-  def saved_model_webcam(self, **kwargs):
+  def saved_model_webcam(self, webcam_idx, **kwargs):
     """Perform webcam inference for the given saved model."""
     import cv2  # pylint: disable=g-import-not-at-top
 
@@ -268,7 +271,7 @@ class ModelInspector(object):
       model_params=self.model_config.as_dict())
     driver.load(self.saved_model_dir)
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(int(webcam_idx))
     if not cap.isOpened():
       print('Error opening input: {}'.format('webcam'))
 
@@ -508,7 +511,7 @@ class ModelInspector(object):
         self.saved_model_video(kwargs['input_video'], kwargs['output_video'],
                                **config_dict)
       elif runmode == 'saved_model_webcam':
-        self.saved_model_webcam(**config_dict)
+        self.saved_model_webcam(kwargs['webcam_idx'], **config_dict)
     elif runmode == 'bm':
       self.benchmark_model(
           warmup_runs=5,
@@ -544,6 +547,7 @@ def main(_):
       output_image_dir=FLAGS.output_image_dir,
       input_video=FLAGS.input_video,
       output_video=FLAGS.output_video,
+      webcam_idx=FLAGS.webcam_idx,
       line_thickness=FLAGS.line_thickness,
       max_boxes_to_draw=FLAGS.max_boxes_to_draw,
       min_score_thresh=FLAGS.min_score_thresh,

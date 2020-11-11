@@ -16,7 +16,7 @@
 # For custom dataset creation
 put images in a new folder (for example): 
 ```
-mkdir automl/efficientdet/smpl_test
+mkdir automl/efficientdet/test
 ```
 It needs to be structured as follows:
 
@@ -30,7 +30,7 @@ It needs to be structured as follows:
 to create tfrecords call:
 check correct working directory if errors occur (be in automl/efficientdet)
 ```
-* PYTHONPATH=".:$PYTHONPATH" python dataset/create_synth_DR_tfrecord.py --data_dir=smpl_test --year=ESM2020  --output_path=tfrecord/esm --camera_settings_json_path=smpl_test/ESM2020/settings/_camera_settings.json --label_map_json_path=smpl_test/ESM2020/settings/_object_settings.json
+* PYTHONPATH=".:$PYTHONPATH" python dataset/create_synth_DR_tfrecord.py --data_dir=test --year=ESM2020  --output_path=tfrecord/esm --camera_settings_json_path=test/ESM2020/settings/_camera_settings.json --label_map_json_path=test/ESM2020/settings/_object_settings.json
 ```
 
 # EfficientDet

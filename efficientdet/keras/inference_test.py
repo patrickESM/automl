@@ -41,23 +41,24 @@ class InferenceTest(tf.test.TestCase):
 
   def test_export_tflite(self):
     saved_model_path = os.path.join(self.tmp_path, 'saved_model')
-    driver = inference.ServingDriver('efficientdet-d0',
-                                     self.tmp_path,
-                                     only_network=True)
+    driver = inference.ServingDriver(
+        'efficientdet-d0', self.tmp_path, only_network=True)
     driver.export(saved_model_path, tflite='FP32')
-    self.assertTrue(tf.io.gfile.exists(os.path.join(saved_model_path, 'fp32.tflite')))
+    self.assertTrue(
+        tf.io.gfile.exists(os.path.join(saved_model_path, 'fp32.tflite')))
     tf.io.gfile.rmtree(saved_model_path)
     driver.export(saved_model_path, tflite='FP16')
-    self.assertTrue(tf.io.gfile.exists(os.path.join(saved_model_path, 'fp16.tflite')))
+    self.assertTrue(
+        tf.io.gfile.exists(os.path.join(saved_model_path, 'fp16.tflite')))
 
   def test_inference(self):
     driver = inference.ServingDriver('efficientdet-d0', self.tmp_path)
     images = tf.ones((1, 512, 512, 3))
     boxes, scores, classes, valid_lens = driver.serve(images)
-    self.assertEqual(tf.reduce_mean(boxes), 163.09)
-    self.assertEqual(tf.reduce_mean(scores), 0.01000005)
+    self.assertEqual(tf.reduce_mean(boxes), 10.0)
+    self.assertEqual(tf.reduce_mean(scores), 0.0)
     self.assertEqual(tf.reduce_mean(classes), 1)
-    self.assertEqual(tf.reduce_mean(valid_lens), 100)
+    self.assertEqual(tf.reduce_mean(valid_lens), 0)
     self.assertEqual(boxes.shape, (1, 100, 4))
     self.assertEqual(scores.shape, (1, 100))
     self.assertEqual(classes.shape, (1, 100))
@@ -68,17 +69,18 @@ class InferenceTest(tf.test.TestCase):
     driver.build({'moving_average_decay': 0})
     images = tf.ones((1, 512, 512, 3))
     boxes, scores, classes, valid_lens = driver.serve(images)
-    self.assertEqual(tf.reduce_mean(boxes), 163.09)
-    self.assertEqual(tf.reduce_mean(scores), 0.01000005)
+    self.assertEqual(tf.reduce_mean(boxes), 10.0)
+    self.assertEqual(tf.reduce_mean(scores), 0.0)
     self.assertEqual(tf.reduce_mean(classes), 1)
-    self.assertEqual(tf.reduce_mean(valid_lens), 100)
+    self.assertEqual(tf.reduce_mean(valid_lens), 0)
     self.assertEqual(boxes.shape, (1, 100, 4))
     self.assertEqual(scores.shape, (1, 100))
     self.assertEqual(classes.shape, (1, 100))
     self.assertEqual(valid_lens.shape, (1,))
 
   def test_network_inference(self):
-    driver = inference.ServingDriver('efficientdet-d0', self.tmp_path, only_network=True)
+    driver = inference.ServingDriver(
+        'efficientdet-d0', self.tmp_path, only_network=True)
     images = tf.ones((1, 512, 512, 3))
     class_outputs, box_outputs = driver.serve(images)
     self.assertLen(class_outputs, 5)
@@ -91,10 +93,10 @@ class InferenceTest(tf.test.TestCase):
     boxes, scores, classes, valid_lens = driver.serve(images)
     policy = tf.keras.mixed_precision.experimental.global_policy()
     if policy.name == 'float32':
-      self.assertEqual(tf.reduce_mean(boxes), 163.09)
-      self.assertEqual(tf.reduce_mean(scores), 0.01000005)
+      self.assertEqual(tf.reduce_mean(boxes), 10.0)
+      self.assertEqual(tf.reduce_mean(scores), 0.0)
       self.assertEqual(tf.reduce_mean(classes), 1)
-      self.assertEqual(tf.reduce_mean(valid_lens), 100)
+      self.assertEqual(tf.reduce_mean(valid_lens), 0)
     elif policy.name == 'float16':
       pass
     elif policy.name == 'bfloat16':

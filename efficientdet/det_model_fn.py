@@ -21,7 +21,6 @@ import tensorflow.compat.v1 as tf
 import coco_metric
 import efficientdet_arch
 import hparams_config
-import iou_utils
 import nms_np
 import utils
 from keras import anchors
@@ -271,7 +270,7 @@ def detection_loss(cls_outputs, box_outputs, labels, params):
 
   # Sum per level losses to total loss.
   cls_loss = tf.add_n(cls_losses)
-  box_loss = tf.add_n(box_losses) if box_losses else 0
+  box_loss = tf.add_n(box_losses) if box_losses else tf.constant(0.)
 
   total_loss = (
       cls_loss + params['box_loss_weight'] * box_loss)
@@ -380,7 +379,8 @@ def _model_fn(features, labels, mode, params, model, variable_filter_fn=None):
     if is_tpu:
       optimizer = tf.tpu.CrossShardOptimizer(optimizer)
     elif params['mixed_precision']:
-      optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(optimizer)
+      optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(
+          optimizer)
 
     # Batch norm requires update_ops to be added as a train_op dependency.
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)

@@ -8,6 +8,11 @@
 * python model_inspect.py --runmode=saved_model_webcam --webcam_idx=0 --model_name=efficientdet-d4 --saved_model_dir='savedmodel' --min_score_thresh=0.35  --max_boxes_to_draw=200 --hparams="mixed_precision=true"
 ```
 
+# PascalVOC 2012 Download help
+```
+* wget https://web.archive.org/web/20200807072751/http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar
+```
+
 # EfficientDet
 
 [1] Mingxing Tan, Ruoming Pang, Quoc V. Le. EfficientDet: Scalable and Efficient Object Detection. CVPR 2020.

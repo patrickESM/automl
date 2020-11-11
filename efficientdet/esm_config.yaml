@@ -1,0 +1,4 @@
+num_classes: 9
+var_freeze_expr: '()'
+is_training_bn: False
+label_map: {1: LGlove, 2: RGlove, 3: Shirt, 4: Pants, 5: Gown, 6: Hat, 7: Mask, 8: Body}

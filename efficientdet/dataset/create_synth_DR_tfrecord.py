@@ -48,12 +48,12 @@ flags.DEFINE_string('camera_settings_json_path', None,
                     'Path to camera settings json file with a dictionary.')
 flags.DEFINE_boolean('ignore_difficult_instances', False, 'Whether to ignore '
                                                           'difficult instances')
-flags.DEFINE_integer('num_shards', 2, 'Number of shards for output file.')
+flags.DEFINE_integer('num_shards', 1, 'Number of shards for output file.')
 flags.DEFINE_integer('num_images', None, 'Max number of imags to process.')
 FLAGS = flags.FLAGS
 
 SETS = ['train', 'val', 'trainval', 'test']
-YEARS = ['ESM2020', 'ESM', 'merged']
+YEARS = ['ESM2020', 'ESM2020_test', 'merged']
 
 esm_label_map_dict = {
     'background': 0,
@@ -163,10 +163,10 @@ def dict_to_tf_example(data,
 
             difficult_obj.append(0)
 
-            xmin.append(float(obj['bounding_box']['top_left'][0]) / width)
-            ymin.append(float(obj['bounding_box']['top_left'][1]) / height)
-            xmax.append(float(obj['bounding_box']['bottom_right'][0]) / width)
-            ymax.append(float(obj['bounding_box']['bottom_right'][1]) / height)
+            xmin.append(float(obj['bounding_box']['top_left'][1]) / width)
+            ymin.append(float(obj['bounding_box']['top_left'][0]) / height)
+            xmax.append(float(obj['bounding_box']['bottom_right'][1]) / width)
+            ymax.append(float(obj['bounding_box']['bottom_right'][0]) / height)
             area.append((xmax[-1] - xmin[-1]) * (ymax[-1] - ymin[-1]))
             classes_text.append(obj['class'].encode('utf8'))
             classes.append(label_map_dict[obj['class']])
@@ -175,10 +175,10 @@ def dict_to_tf_example(data,
             poses.append('Frontal'.encode('utf8'))
 
             if ann_json_dict:
-                abs_xmin = int(obj['bounding_box']['top_left'][0])
-                abs_ymin = int(obj['bounding_box']['top_left'][1])
-                abs_xmax = int(obj['bounding_box']['bottom_right'][0])
-                abs_ymax = int(obj['bounding_box']['bottom_right'][1])
+                abs_xmin = int(obj['bounding_box']['top_left'][1])
+                abs_ymin = int(obj['bounding_box']['top_left'][0])
+                abs_xmax = int(obj['bounding_box']['bottom_right'][1])
+                abs_ymax = int(obj['bounding_box']['bottom_right'][0])
                 abs_width = abs_xmax - abs_xmin
                 abs_height = abs_ymax - abs_ymin
                 ann = {
@@ -266,7 +266,6 @@ def main(_):
             label_map_dict = {'background': 0}
             for idx, label in enumerate(labels):
                 label_map_dict[label] = idx+1
-            label_map_dict['Body'] = idx+1
     else:
         label_map_dict = esm_label_map_dict
 

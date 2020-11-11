@@ -14,7 +14,11 @@
 ```
 
 # For custom dataset creation
-smpl_test needs to be structured as follows:
+put images in a new folder (for example): 
+```
+mkdir automl/efficientdet/smpl_test
+```
+It needs to be structured as follows:
 
 * smpl_test/ESM2020/settings/
   * _camera_Settings.json

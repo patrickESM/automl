@@ -13,25 +13,6 @@
 * wget https://web.archive.org/web/20200807072751/http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar
 ```
 
-# For custom dataset creation
-put images in a new folder (for example): 
-```
-mkdir automl/efficientdet/test
-```
-It needs to be structured as follows:
-
-* smpl_test/ESM2020/settings/
-  * _camera_Settings.json
-  * _object_settings.json
-
-* smpl_test/ESM2020/
-  * all images and annotaion jsons
-
-to create tfrecords call:
-check correct working directory if errors occur (be in automl/efficientdet)
-```
-* PYTHONPATH=".:$PYTHONPATH" python dataset/create_synth_DR_tfrecord.py --data_dir=test --year=ESM2020  --output_path=tfrecord/esm --camera_settings_json_path=test/ESM2020/settings/_camera_settings.json --label_map_json_path=test/ESM2020/settings/_object_settings.json
-```
 
 # EfficientDet
 
